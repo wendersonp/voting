@@ -7,6 +7,8 @@ import com.wendersonp.voting.domain.model.VoteEntity;
 import com.wendersonp.voting.domain.repository.IVoteRepository;
 import com.wendersonp.voting.domain.service.IVoteValidationService;
 
+import java.util.UUID;
+
 public class VoteServiceImpl implements IVoteService {
 
     private final IVoteRepository voteRepository;
@@ -19,8 +21,8 @@ public class VoteServiceImpl implements IVoteService {
     }
 
     @Override
-    public void registerVote(VoteDTO voteDTO) {
-        VoteEntity vote = voteDTO.toEntity();
+    public void registerVote(UUID voterId, VoteDTO voteDTO) {
+        VoteEntity vote = voteDTO.toEntity(voterId);
 
         if (voteValidationService.isVoteValid(vote)) {
             throw new BadRequestException();

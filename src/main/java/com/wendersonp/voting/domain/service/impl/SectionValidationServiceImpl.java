@@ -38,6 +38,11 @@ public class SectionValidationServiceImpl implements ISectionValidationService {
         return section.isOpen();
     }
 
+    @Override
+    public boolean validateAppurateSection(SectionEntity section) {
+        return section.isClosed();
+    }
+
     private boolean areCandidateIdsValid(Set<UUID> candidateIds) {
         int candidatesCount = candidateRepository.countCandidatesById(candidateIds);
         return candidatesCount >= candidateIds.size();

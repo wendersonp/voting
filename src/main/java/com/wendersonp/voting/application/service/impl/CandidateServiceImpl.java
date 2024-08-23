@@ -5,6 +5,7 @@ import com.wendersonp.voting.application.exception.BadRequestException;
 import com.wendersonp.voting.application.exception.NotFoundException;
 import com.wendersonp.voting.application.service.ICandidateService;
 import com.wendersonp.voting.domain.repository.ICandidateRepository;
+import com.wendersonp.voting.domain.repository.IVoteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,8 +22,11 @@ public class CandidateServiceImpl implements ICandidateService {
 
     private final ICandidateRepository repository;
 
-    public CandidateServiceImpl(ICandidateRepository repository) {
+    private final IVoteRepository voteRepository;
+
+    public CandidateServiceImpl(ICandidateRepository repository, IVoteRepository voteRepository) {
         this.repository = repository;
+        this.voteRepository = voteRepository;
     }
 
 
@@ -58,7 +62,14 @@ public class CandidateServiceImpl implements ICandidateService {
     @Override
     public void delete(UUID id) {
         validateIfExists(id);
+        validateIfAlreadyReceivedVote(id);
         repository.deleteById(id);
+    }
+
+    private void validateIfAlreadyReceivedVote(UUID id) {
+        if (voteRepository.existsByCandidateId(id)) {
+            throw new BadRequestException("Candidato já recebeu voto, não pode ser excluído");
+        }
     }
 
     private void validateIfExists(UUID id) {

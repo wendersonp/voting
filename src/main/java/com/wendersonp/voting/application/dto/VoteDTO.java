@@ -7,10 +7,9 @@ import java.util.UUID;
 
 public record VoteDTO(
         @NotNull UUID sectionId,
-        @NotNull UUID voterId,
         @NotNull UUID candidateId) {
 
-    public VoteEntity toEntity(){
+    public VoteEntity toEntity(UUID voterId){
         return new VoteEntity(sectionId, voterId, candidateId);
     }
 }

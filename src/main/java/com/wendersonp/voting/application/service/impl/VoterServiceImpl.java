@@ -4,6 +4,7 @@ import com.wendersonp.voting.application.dto.VoterDTO;
 import com.wendersonp.voting.application.exception.BadRequestException;
 import com.wendersonp.voting.application.exception.NotFoundException;
 import com.wendersonp.voting.application.service.IVoterService;
+import com.wendersonp.voting.domain.repository.IVoteRepository;
 import com.wendersonp.voting.domain.repository.IVoterRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +21,11 @@ public class VoterServiceImpl implements IVoterService {
 
     private final IVoterRepository repository;
 
-    public VoterServiceImpl(IVoterRepository repository) {
+    private final IVoteRepository voteRepository;
+
+    public VoterServiceImpl(IVoterRepository repository, IVoteRepository voteRepository) {
         this.repository = repository;
+        this.voteRepository = voteRepository;
     }
 
 
@@ -57,7 +61,14 @@ public class VoterServiceImpl implements IVoterService {
     @Override
     public void delete(UUID id) {
         validateIfExists(id);
+        validateIfAlreadyVoted(id);
         repository.deleteById(id);
+    }
+
+    private void validateIfAlreadyVoted(UUID id) {
+        if (voteRepository.existsByVoterId(id)) {
+            throw new BadRequestException("Eleitor já votou, não pode ser excluído");
+        }
     }
 
     private void validateIfExists(UUID id) {

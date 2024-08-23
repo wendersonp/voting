@@ -10,4 +10,6 @@ public interface ISectionValidationService {
     boolean validateOpenSection(Set<UUID> candidateIds, UUID positionId);
 
     boolean validateCloseSection(SectionEntity section);
+
+    boolean validateAppurateSection(SectionEntity section);
 }

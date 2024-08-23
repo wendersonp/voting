@@ -9,4 +9,6 @@ public interface ISectionService {
     void openSection(OpenSectionDTO sectionDTO);
 
     void closeSection(UUID sectionId);
+
+    String generateBulletin(UUID sectionId);
 }
