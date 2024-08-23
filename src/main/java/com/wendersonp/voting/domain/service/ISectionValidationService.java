@@ -7,9 +7,9 @@ import java.util.UUID;
 
 public interface ISectionValidationService {
 
-    boolean validateOpenSection(Set<UUID> candidateIds, UUID positionId);
+    boolean validateToOpenSection(Set<UUID> candidateIds, UUID positionId);
 
-    boolean validateCloseSection(SectionEntity section);
+    boolean validateToCloseSection(SectionEntity section);
 
     boolean validateAppurateSection(SectionEntity section);
 }

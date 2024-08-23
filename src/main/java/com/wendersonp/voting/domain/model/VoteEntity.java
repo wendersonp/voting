@@ -45,6 +45,14 @@ public class VoteEntity {
         voter = new VoterEntity(voterId);
     }
 
+    public VoteEntity(UUID id, SectionEntity section, CandidateEntity candidate, VoterEntity voter, LocalDateTime registeredTime) {
+        this.id = id;
+        this.section = section;
+        this.candidate = candidate;
+        this.voter = voter;
+        this.registeredTime = registeredTime;
+    }
+
 
     public UUID getId() {
         return id;

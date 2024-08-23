@@ -2,7 +2,6 @@ package com.wendersonp.voting.domain.model;
 
 
 import com.wendersonp.voting.domain.model.enumeration.SectionStatus;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -58,6 +57,13 @@ public class SectionEntity {
         this.id = id;
     }
     public SectionEntity() {
+    }
+
+    public SectionEntity(Set<CandidateEntity> candidates, PositionEntity runningPosition, SectionStatus status, LocalDateTime startDate) {
+        this.candidates = candidates;
+        this.runningPosition = runningPosition;
+        this.status = status;
+        this.startDate = startDate;
     }
 
     public UUID getId() {

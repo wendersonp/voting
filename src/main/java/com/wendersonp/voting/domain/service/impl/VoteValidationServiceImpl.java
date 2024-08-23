@@ -1,5 +1,7 @@
 package com.wendersonp.voting.domain.service.impl;
 
+import com.wendersonp.voting.application.exception.NotFoundException;
+import com.wendersonp.voting.domain.model.CandidateEntity;
 import com.wendersonp.voting.domain.model.SectionEntity;
 import com.wendersonp.voting.domain.model.VoteEntity;
 import com.wendersonp.voting.domain.repository.ISectionRepository;
@@ -7,6 +9,7 @@ import com.wendersonp.voting.domain.repository.IVoteRepository;
 import com.wendersonp.voting.domain.service.IVoteValidationService;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,7 +26,11 @@ public class VoteValidationServiceImpl implements IVoteValidationService {
 
     @Override
     public boolean isVoteValid(VoteEntity vote) {
-        return doesVoteNotExist(vote) && isSectionOpen(vote.getSection().getId());
+        SectionEntity section = findSection(vote.getSection().getId())
+                .orElseThrow(NotFoundException::new);
+        return doesVoteNotExist(vote)
+                && isSectionOpen(section)
+                && isCandidateRunning(vote.getCandidate().getId(), section);
     }
 
     private boolean doesVoteNotExist(VoteEntity vote) {
@@ -32,8 +39,19 @@ public class VoteValidationServiceImpl implements IVoteValidationService {
         );
     }
 
-    private boolean isSectionOpen(UUID sectionId) {
-        return sectionRepository.findById(sectionId)
-                .map(SectionEntity::isOpen).orElse(false);
+    private boolean isSectionOpen(SectionEntity sectionEntity) {
+        return sectionEntity.isOpen();
+    }
+
+    private boolean isCandidateRunning(UUID candidateId, SectionEntity section) {
+       return section
+               .getCandidates()
+               .stream()
+               .map(CandidateEntity::getId)
+               .anyMatch(runningId -> runningId.equals(candidateId));
+    }
+
+    private Optional<SectionEntity> findSection(UUID sectionId) {
+        return sectionRepository.findById(sectionId);
     }
 }

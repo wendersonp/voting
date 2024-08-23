@@ -28,12 +28,12 @@ public class SectionValidationServiceImpl implements ISectionValidationService {
     }
 
     @Override
-    public boolean validateOpenSection(Set<UUID> candidateIds, UUID positionId) {
+    public boolean validateToOpenSection(Set<UUID> candidateIds, UUID positionId) {
         return areCandidateIdsValid(candidateIds) && isPositionIdValid(positionId);
     }
 
     @Override
-    public boolean validateCloseSection(SectionEntity section) {
+    public boolean validateToCloseSection(SectionEntity section) {
         validateVoteCountOrDeleteVote(section.getVotes());
         return section.isOpen();
     }

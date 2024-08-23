@@ -38,7 +38,7 @@ public class SectionServiceImpl implements ISectionService {
     @Override
     public void openSection(OpenSectionDTO sectionDTO) {
         boolean validationResult = sectionValidationService
-                .validateOpenSection(sectionDTO.candidatesRunningIds(), sectionDTO.runningPosition());
+                .validateToOpenSection(sectionDTO.candidatesRunningIds(), sectionDTO.runningPosition());
         if (!validationResult) {
             throw new BadRequestException("Sessão não pode ser aberta");
         }
@@ -52,7 +52,7 @@ public class SectionServiceImpl implements ISectionService {
     @Transactional
     public void closeSection(UUID sectionId) {
         SectionEntity sectionEntity = findSection(sectionId);
-        boolean canCloseSection = sectionValidationService.validateCloseSection(sectionEntity);
+        boolean canCloseSection = sectionValidationService.validateToCloseSection(sectionEntity);
         if (!canCloseSection) {
             throw new BadRequestException("Sessão nao pode ser fechada");
         }
