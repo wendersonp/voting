@@ -1,4 +1,4 @@
-package com.wendersonp.voting.domain.service;
+package com.wendersonp.voting.application.service;
 
 import com.wendersonp.voting.domain.model.SectionReportEntity;
 

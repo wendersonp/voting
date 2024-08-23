@@ -1,10 +1,8 @@
 package com.wendersonp.voting.domain.service.impl;
 
 import com.wendersonp.voting.domain.model.SectionEntity;
-import com.wendersonp.voting.domain.model.VoteEntity;
 import com.wendersonp.voting.domain.repository.ICandidateRepository;
 import com.wendersonp.voting.domain.repository.IPositionRepository;
-import com.wendersonp.voting.domain.repository.IVoteRepository;
 import com.wendersonp.voting.domain.service.ISectionValidationService;
 
 import java.util.Set;
@@ -16,15 +14,12 @@ public class SectionValidationServiceImpl implements ISectionValidationService {
 
     private final IPositionRepository positionRepository;
 
-    private final IVoteRepository voteRepository;
 
     public SectionValidationServiceImpl(
             ICandidateRepository candidateRepository,
-            IPositionRepository positionRepository,
-            IVoteRepository voteRepository) {
+            IPositionRepository positionRepository) {
         this.candidateRepository = candidateRepository;
         this.positionRepository = positionRepository;
-        this.voteRepository = voteRepository;
     }
 
     @Override
@@ -34,7 +29,6 @@ public class SectionValidationServiceImpl implements ISectionValidationService {
 
     @Override
     public boolean validateToCloseSection(SectionEntity section) {
-        validateVoteCountOrDeleteVote(section.getVotes());
         return section.isOpen();
     }
 
@@ -52,9 +46,5 @@ public class SectionValidationServiceImpl implements ISectionValidationService {
         return positionRepository.existsById(positionId);
     }
 
-    private void validateVoteCountOrDeleteVote(Set<VoteEntity> votes) {
-        if (votes.size() == 1) {
-            voteRepository.delete(votes.iterator().next());
-        }
-    }
+
 }

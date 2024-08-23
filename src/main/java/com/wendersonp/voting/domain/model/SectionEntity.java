@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -30,13 +31,13 @@ public class SectionEntity {
 
     @OneToMany
     @JoinColumn(name = "fk_candidate")
-    private Set<CandidateEntity> candidates;
+    private Set<CandidateEntity> candidates = Collections.emptySet();
 
     @ManyToOne
     private PositionEntity runningPosition;
 
     @OneToMany(mappedBy = "section")
-    private Set<VoteEntity> votes;
+    private Set<VoteEntity> votes = Collections.emptySet();
 
     @Enumerated(value = EnumType.STRING)
     private SectionStatus status;
@@ -102,5 +103,9 @@ public class SectionEntity {
             endDate = LocalDateTime.now();
             status = SectionStatus.CLOSED;
         }
+    }
+
+    public void setVotes(Set<VoteEntity> votes) {
+        this.votes = votes;
     }
 }

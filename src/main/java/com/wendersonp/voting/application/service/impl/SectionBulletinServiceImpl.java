@@ -1,11 +1,12 @@
-package com.wendersonp.voting.domain.service.impl;
+package com.wendersonp.voting.application.service.impl;
 
 import com.wendersonp.voting.domain.model.SectionReportEntity;
-import com.wendersonp.voting.domain.service.ISectionBulletinBuilderService;
+import com.wendersonp.voting.application.service.ISectionBulletinBuilderService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Service
 public class SectionBulletinServiceImpl implements ISectionBulletinBuilderService {
@@ -17,7 +18,7 @@ public class SectionBulletinServiceImpl implements ISectionBulletinBuilderServic
         addDivider(bulletinBuilder);
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        addLine(bulletinBuilder, "Data relat\u00F3rio", LocalDateTime.now().format(dateTimeFormatter));
+        addLine(bulletinBuilder, "Data relatório", LocalDateTime.now().format(dateTimeFormatter));
         jumpLine(bulletinBuilder);
 
         addLine(bulletinBuilder, "Cargo:", sectionReportEntity.getSectionEntity().getRunningPosition().getName());
@@ -34,7 +35,8 @@ public class SectionBulletinServiceImpl implements ISectionBulletinBuilderServic
         addLine(bulletinBuilder, "Total de votos", String.valueOf(sectionReportEntity.getTotalVotes()));
         jumpLine(bulletinBuilder);
 
-        addLine(bulletinBuilder, "Vencedor:", sectionReportEntity.getWinner().getName());
+        var winner = sectionReportEntity.getWinner();
+        addLine(bulletinBuilder, "Vencedor:", Objects.nonNull(winner) ? winner.getName() : "SEM VENCEDOR");
         addDivider(bulletinBuilder);
 
         return bulletinBuilder.toString();

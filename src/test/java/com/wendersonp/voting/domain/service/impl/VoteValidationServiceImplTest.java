@@ -39,7 +39,7 @@ class VoteValidationServiceImplTest {
     @DisplayName("should verify that vote is valid")
     @Test
     void shouldVerifyThatVoteIsValid() {
-        SectionEntity section = SectionEntityFixture.buildOpen();
+        SectionEntity section = SectionEntityFixture.buildToOpen();
         CandidateEntity candidate = section.getCandidates().iterator().next();
         VoterEntity voter = VoterEntityFixture.build();
         VoteEntity vote = VoteEntityFixture.build(section, voter, candidate);
@@ -60,7 +60,7 @@ class VoteValidationServiceImplTest {
     @DisplayName("should verify that vote already exists")
     @Test
     void shouldVerifyThatVoteAlreadyExists() {
-        SectionEntity section = SectionEntityFixture.buildOpen();
+        SectionEntity section = SectionEntityFixture.buildToOpen();
         CandidateEntity candidate = section.getCandidates().iterator().next();
         VoterEntity voter = VoterEntityFixture.build();
         VoteEntity vote = VoteEntityFixture.build(section, voter, candidate);
@@ -81,7 +81,7 @@ class VoteValidationServiceImplTest {
     @DisplayName("should verify that vote is for not open section")
     @Test
     void shouldVerifyThatVoteIsForNotOpenSection() {
-        SectionEntity section = SectionEntityFixture.buildOpen();
+        SectionEntity section = SectionEntityFixture.buildToOpen();
         CandidateEntity candidate = section.getCandidates().iterator().next();
         VoterEntity voter = VoterEntityFixture.build();
         VoteEntity vote = VoteEntityFixture.build(section, voter, candidate);
@@ -103,7 +103,7 @@ class VoteValidationServiceImplTest {
     @DisplayName("should verify that vote is for candidate not running")
     @Test
     void shouldVerifyThatVoteIsForCandidateNotRunning() {
-        SectionEntity section = SectionEntityFixture.buildOpen();
+        SectionEntity section = SectionEntityFixture.buildToOpen();
         CandidateEntity candidate = CandidateEntityFixture.build();
         VoterEntity voter = VoterEntityFixture.build();
         VoteEntity vote = VoteEntityFixture.build(section, voter, candidate);

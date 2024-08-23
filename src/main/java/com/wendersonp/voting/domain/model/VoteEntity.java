@@ -7,14 +7,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tb_vote")
+@Table(name = "tb_vote", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"fk_section", "fk_candidate", "fk_voter"})
+})
 public class VoteEntity {
 
     @Id
@@ -26,11 +28,11 @@ public class VoteEntity {
     @JoinColumn(name = "fk_section")
     private SectionEntity section;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "fk_candidate")
     private CandidateEntity candidate;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "fk_voter")
     private VoterEntity voter;
 

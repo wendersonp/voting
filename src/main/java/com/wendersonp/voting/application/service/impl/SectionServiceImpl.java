@@ -8,7 +8,7 @@ import com.wendersonp.voting.domain.model.SectionEntity;
 import com.wendersonp.voting.domain.model.SectionReportEntity;
 import com.wendersonp.voting.domain.repository.ISectionRepository;
 import com.wendersonp.voting.domain.service.ISectionAppurationService;
-import com.wendersonp.voting.domain.service.ISectionBulletinBuilderService;
+import com.wendersonp.voting.application.service.ISectionBulletinBuilderService;
 import com.wendersonp.voting.domain.service.ISectionValidationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +49,6 @@ public class SectionServiceImpl implements ISectionService {
     }
 
     @Override
-    @Transactional
     public void closeSection(UUID sectionId) {
         SectionEntity sectionEntity = findSection(sectionId);
         boolean canCloseSection = sectionValidationService.validateToCloseSection(sectionEntity);

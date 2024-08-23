@@ -53,7 +53,7 @@ class SectionValidationServiceImplTest {
         assertTrue(result);
     }
 
-    @DisplayName("section should have candidates that does not exist")
+    @DisplayName("section should not have candidates that does not exist")
     @Test
     void sectionShouldHaveCandidatesThatDoesNotExist() {
         SectionEntity section = SectionEntityFixture.buildToOpen();
@@ -83,4 +83,43 @@ class SectionValidationServiceImplTest {
 
         assertFalse(result);
     }
+
+    @DisplayName("section should be valid to close")
+    @Test
+    void sectionShouldBeValidToClose() {
+        SectionEntity section = SectionEntityFixture.buildToClose();
+
+
+        var result = sectionValidationService.validateToCloseSection(section);
+        assertTrue(result);
+    }
+
+    @DisplayName("section should not be able to close when not open")
+    @Test
+    void sectionShouldNotBeAbleToCloseWhenNotOpen() {
+        SectionEntity section = SectionEntityFixture.buildToOpen();
+
+        var result = sectionValidationService.validateToCloseSection(section);
+        assertFalse(result);
+    }
+
+    @DisplayName("section should be able to count votes when closed")
+    @Test
+    void sectionShouldBeAbleToCountVotesWhenClosed() {
+        SectionEntity section = SectionEntityFixture.buildToClose();
+        section.closeSection();
+
+        var result = sectionValidationService.validateAppurateSection(section);
+        assertTrue(result);
+    }
+
+    @DisplayName("section should not be able to count votes when not closed")
+    @Test
+    void sectionShouldBeNotAbleToCountVotesWhenNotClosed() {
+        SectionEntity section = SectionEntityFixture.buildToClose();
+
+        var result = sectionValidationService.validateAppurateSection(section);
+        assertFalse(result);
+    }
+
 }
