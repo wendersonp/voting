@@ -3,16 +3,14 @@ package com.wendersonp.voting.domain.service.impl;
 import com.wendersonp.voting.domain.model.CandidateEntity;
 import com.wendersonp.voting.domain.model.SectionEntity;
 import com.wendersonp.voting.domain.model.SectionReportEntity;
-import com.wendersonp.voting.domain.model.VoteEntity;
 import com.wendersonp.voting.domain.service.ISectionAppurationService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,21 +22,24 @@ public class SectionAppurationServiceImpl implements ISectionAppurationService {
         if (theresOnlyOneVote(section)) {
             section.setVotes(Collections.emptySet());
         }
+        Map<CandidateEntity, BigInteger> voteCountMap = generateVoteCountMap(section);
+        var winner = calculateWinner(voteCountMap);
+        BigInteger totalVotes = calculateTotalVotes(voteCountMap);
 
-        Map<CandidateEntity, List<VoteEntity>> votesMap = section
-                .getVotes()
-                .stream()
-                .collect(Collectors.groupingBy(VoteEntity::getCandidate));
+        return new SectionReportEntity(
+                section,
+                voteCountMap,
+                Objects.nonNull(winner) ? winner.getKey() : null,
+                totalVotes
+        );
+    }
 
-        Map<CandidateEntity, BigInteger> voteCountMap = votesMap
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey, votesEntry -> BigInteger.valueOf(votesEntry.getValue().size())
-                ));
+    private static BigInteger calculateTotalVotes(Map<CandidateEntity, BigInteger> voteCountMap) {
+        return voteCountMap.values().stream().reduce(
+                BigInteger.ZERO, BigInteger::add);
+    }
 
-        addCandidatesWithNoVotes(section.getCandidates(), voteCountMap);
-
+    private Map.Entry<CandidateEntity, BigInteger> calculateWinner(Map<CandidateEntity, BigInteger> voteCountMap) {
         var winner = voteCountMap.entrySet()
                 .stream()
                 .max(Map.Entry.comparingByValue()).orElse(null);
@@ -46,15 +47,19 @@ public class SectionAppurationServiceImpl implements ISectionAppurationService {
         if (isThereAnotherWinner(winner, voteCountMap)) {
             winner = null;
         }
+        return winner;
+    }
 
-        BigInteger totalVotes = voteCountMap.values().stream().reduce(
-                BigInteger.ZERO, BigInteger::add);
-        return new SectionReportEntity(
-                section,
-                voteCountMap,
-                Objects.nonNull(winner) ? winner.getKey() : null,
-                totalVotes
-        );
+    private static Map<CandidateEntity, BigInteger> generateVoteCountMap(SectionEntity section) {
+        Map<CandidateEntity, BigInteger> voteCountMap = section
+                .getCandidates()
+                .stream().collect(Collectors.toMap(Function.identity(), candidate -> BigInteger.ZERO));
+
+        section.getVotes().forEach(vote -> {
+            BigInteger voteCountPlusOne = voteCountMap.get(vote.getCandidate()).add(BigInteger.ONE);
+            voteCountMap.put(vote.getCandidate(), voteCountPlusOne);
+        });
+        return voteCountMap;
     }
 
     private boolean isThereAnotherWinner(
@@ -77,9 +82,4 @@ public class SectionAppurationServiceImpl implements ISectionAppurationService {
         return section.getVotes().size() == 1;
     }
 
-    private void addCandidatesWithNoVotes(Set<CandidateEntity> allCandidates, Map<CandidateEntity, BigInteger> voteCountMap) {
-        allCandidates.forEach(candidate ->
-            voteCountMap.putIfAbsent(candidate, BigInteger.ZERO)
-        );
-    }
 }
