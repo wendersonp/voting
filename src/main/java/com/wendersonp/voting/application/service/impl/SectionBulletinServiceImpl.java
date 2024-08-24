@@ -43,7 +43,8 @@ public class SectionBulletinServiceImpl implements ISectionBulletinBuilderServic
     }
 
     private void addDivider(StringBuilder builder) {
-        builder.append("-".repeat(40));
+        builder.append("-".repeat(40) + "\n");
+
     }
 
     private void jumpLine(StringBuilder stringBuilder) {

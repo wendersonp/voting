@@ -45,8 +45,7 @@ class VoteValidationServiceImplTest {
         VoteEntity vote = VoteEntityFixture.build(section, voter, candidate);
 
         Mockito.when(voteRepository
-                .existsBySectionIdAndCandidateIdAndVoterId(
-                        any(),
+                .existsBySectionIdAndVoterId(
                         any(),
                         any()
                 )).thenReturn(false);
@@ -66,8 +65,7 @@ class VoteValidationServiceImplTest {
         VoteEntity vote = VoteEntityFixture.build(section, voter, candidate);
 
         Mockito.when(voteRepository
-                .existsBySectionIdAndCandidateIdAndVoterId(
-                        any(),
+                .existsBySectionIdAndVoterId(
                         any(),
                         any()
                 )).thenReturn(true);
@@ -88,8 +86,7 @@ class VoteValidationServiceImplTest {
         section.closeSection();
 
         Mockito.when(voteRepository
-                .existsBySectionIdAndCandidateIdAndVoterId(
-                        any(),
+                .existsBySectionIdAndVoterId(
                         any(),
                         any()
                 )).thenReturn(false);
@@ -109,8 +106,7 @@ class VoteValidationServiceImplTest {
         VoteEntity vote = VoteEntityFixture.build(section, voter, candidate);
 
         Mockito.when(voteRepository
-                .existsBySectionIdAndCandidateIdAndVoterId(
-                        any(),
+                .existsBySectionIdAndVoterId(
                         any(),
                         any()
                 )).thenReturn(false);

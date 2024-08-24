@@ -4,12 +4,14 @@ import com.wendersonp.voting.application.dto.PositionDTO;
 import com.wendersonp.voting.application.exception.BadRequestException;
 import com.wendersonp.voting.application.exception.NotFoundException;
 import com.wendersonp.voting.application.service.IPositionService;
+import com.wendersonp.voting.application.util.ErrorMessages;
 import com.wendersonp.voting.domain.repository.IPositionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -32,7 +34,7 @@ public class PositionServiceImpl implements IPositionService {
             final var positionEntity = positionDTO.toEntity();
             repository.save(positionEntity);
         } catch (DataIntegrityViolationException ex) {
-            throw new BadRequestException("Posição já existe", ex);
+            throw new BadRequestException(ErrorMessages.POSITION_ALREADY_EXISTS, ex);
         }
     }
 
@@ -46,7 +48,11 @@ public class PositionServiceImpl implements IPositionService {
 
     @Override
     public Page<PositionDTO> findAll(Pageable pageRequest) {
-        return repository.findAll(pageRequest).map(PositionDTO::new);
+        try {
+            return repository.findAll(pageRequest).map(PositionDTO::new);
+        } catch (PropertyReferenceException exception) {
+            throw new BadRequestException(ErrorMessages.SORT_FIELD_DOESNT_EXIST);
+        }
     }
 
     @Override

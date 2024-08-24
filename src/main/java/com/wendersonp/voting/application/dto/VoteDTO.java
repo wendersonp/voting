@@ -10,6 +10,6 @@ public record VoteDTO(
         @NotNull UUID candidateId) {
 
     public VoteEntity toEntity(UUID voterId){
-        return new VoteEntity(sectionId, voterId, candidateId);
+        return new VoteEntity(sectionId, candidateId, voterId);
     }
 }

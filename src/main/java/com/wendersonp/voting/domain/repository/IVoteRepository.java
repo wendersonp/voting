@@ -13,5 +13,5 @@ public interface IVoteRepository extends JpaRepository<VoteEntity, UUID> {
 
     boolean existsByVoterId(UUID voterId);
 
-    boolean existsBySectionIdAndCandidateIdAndVoterId(UUID sectionId, UUID candidateId, UUID voterId);
+    boolean existsBySectionIdAndVoterId(UUID sectionId, UUID voterId);
 }

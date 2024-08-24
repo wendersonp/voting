@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tb_vote", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"fk_section", "fk_candidate", "fk_voter"})
+        @UniqueConstraint(columnNames = {"fk_section", "fk_voter"})
 })
 public class VoteEntity {
 

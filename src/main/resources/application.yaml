@@ -25,6 +25,12 @@ spring:
       maximumPoolSize: 8
       leakDetectionThreshold: 60000
 
+  data:
+    redis:
+      database: 0
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
 logging:
   level:
     org.hibernate.type.descriptor.sql.BasicBinder: trace

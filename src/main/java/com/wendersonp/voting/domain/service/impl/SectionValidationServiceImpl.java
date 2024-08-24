@@ -4,10 +4,12 @@ import com.wendersonp.voting.domain.model.SectionEntity;
 import com.wendersonp.voting.domain.repository.ICandidateRepository;
 import com.wendersonp.voting.domain.repository.IPositionRepository;
 import com.wendersonp.voting.domain.service.ISectionValidationService;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.UUID;
 
+@Service
 public class SectionValidationServiceImpl implements ISectionValidationService {
 
     private final ICandidateRepository candidateRepository;

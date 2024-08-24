@@ -50,16 +50,17 @@ public class CandidateEntity {
         this.name = name;
     }
 
+
     @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        CandidateEntity that = (CandidateEntity) object;
-        return Objects.equals(getName(), that.getName());
+    public boolean equals(Object objectToCompare) {
+        if (this == objectToCompare) return true;
+        if (objectToCompare == null || getClass() != objectToCompare.getClass()) return false;
+        CandidateEntity candidate = (CandidateEntity) objectToCompare;
+        return Objects.equals(getId(), candidate.getId()) && Objects.equals(getName(), candidate.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName());
+        return Objects.hash(getId(), getName());
     }
 }

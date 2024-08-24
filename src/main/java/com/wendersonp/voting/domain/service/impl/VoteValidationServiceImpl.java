@@ -34,8 +34,8 @@ public class VoteValidationServiceImpl implements IVoteValidationService {
     }
 
     private boolean doesVoteNotExist(VoteEntity vote) {
-        return !voteRepository.existsBySectionIdAndCandidateIdAndVoterId(
-                vote.getSection().getId(), vote.getCandidate().getId(), vote.getVoter().getId()
+        return !voteRepository.existsBySectionIdAndVoterId(
+                vote.getSection().getId(), vote.getVoter().getId()
         );
     }
 

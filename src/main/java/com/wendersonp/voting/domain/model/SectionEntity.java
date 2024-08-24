@@ -9,7 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -29,8 +29,7 @@ public class SectionEntity {
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @OneToMany
-    @JoinColumn(name = "fk_candidate")
+    @ManyToMany
     private Set<CandidateEntity> candidates = Collections.emptySet();
 
     @ManyToOne
@@ -67,22 +66,6 @@ public class SectionEntity {
         this.startDate = startDate;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public Set<CandidateEntity> getCandidates() {
-        return candidates;
-    }
-
-    public PositionEntity getRunningPosition() {
-        return runningPosition;
-    }
-
-    public Set<VoteEntity> getVotes() {
-        return votes;
-    }
-
     public boolean isOpen() {
         return SectionStatus.OPEN.equals(status);
     }
@@ -104,8 +87,36 @@ public class SectionEntity {
             status = SectionStatus.CLOSED;
         }
     }
-
     public void setVotes(Set<VoteEntity> votes) {
         this.votes = votes;
     }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public Set<CandidateEntity> getCandidates() {
+        return candidates;
+    }
+
+    public PositionEntity getRunningPosition() {
+        return runningPosition;
+    }
+
+    public Set<VoteEntity> getVotes() {
+        return votes;
+    }
+
+    public SectionStatus getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
 }

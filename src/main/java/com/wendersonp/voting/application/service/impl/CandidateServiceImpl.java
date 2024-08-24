@@ -4,6 +4,7 @@ import com.wendersonp.voting.application.dto.CandidateDTO;
 import com.wendersonp.voting.application.exception.BadRequestException;
 import com.wendersonp.voting.application.exception.NotFoundException;
 import com.wendersonp.voting.application.service.ICandidateService;
+import com.wendersonp.voting.application.util.ErrorMessages;
 import com.wendersonp.voting.domain.repository.ICandidateRepository;
 import com.wendersonp.voting.domain.repository.IVoteRepository;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -36,7 +38,7 @@ public class CandidateServiceImpl implements ICandidateService {
             final var candidateEntity = candidateDTO.toEntity();
             repository.save(candidateEntity);
         } catch (DataIntegrityViolationException ex) {
-            throw new BadRequestException("Candidato já existe", ex);
+            throw new BadRequestException(ErrorMessages.CANDIDATE_ALREADY_EXISTS, ex);
         }
     }
 
@@ -50,7 +52,11 @@ public class CandidateServiceImpl implements ICandidateService {
 
     @Override
     public Page<CandidateDTO> findAll(Pageable pageRequest) {
-        return repository.findAll(pageRequest).map(CandidateDTO::new);
+        try {
+            return repository.findAll(pageRequest).map(CandidateDTO::new);
+        } catch (PropertyReferenceException exception) {
+            throw new BadRequestException(ErrorMessages.SORT_FIELD_DOESNT_EXIST);
+        }
     }
 
     @Override
@@ -68,12 +74,12 @@ public class CandidateServiceImpl implements ICandidateService {
 
     private void validateIfAlreadyReceivedVote(UUID id) {
         if (voteRepository.existsByCandidateId(id)) {
-            throw new BadRequestException("Candidato já recebeu voto, não pode ser excluído");
+            throw new BadRequestException(ErrorMessages.CANDIDATE_CANNOT_BE_DELETED);
         }
     }
 
-    private void validateIfExists(UUID id) {
-        if (!repository.existsById(id)) {
+    private void validateIfExists(UUID candidateId) {
+        if (!repository.existsById(candidateId)) {
             throw new NotFoundException();
         }
     }
