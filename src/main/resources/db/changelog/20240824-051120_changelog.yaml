@@ -1,0 +1,232 @@
+databaseChangeLog:
+- changeSet:
+    id: 1724476288382-1
+    author: evobu (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: tb_candidatePK
+            name: id
+            type: BINARY(16)
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: VARCHAR(255)
+        tableName: tb_candidate
+- changeSet:
+    id: 1724476288382-2
+    author: evobu (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: tb_positionPK
+            name: id
+            type: BINARY(16)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: tb_position
+- changeSet:
+    id: 1724476288382-3
+    author: evobu (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: tb_sectionPK
+            name: id
+            type: BINARY(16)
+        - column:
+            name: end_date
+            type: datetime(6)
+        - column:
+            name: start_date
+            type: datetime(6)
+        - column:
+            name: status
+            type: VARCHAR(16)
+        - column:
+            name: running_position_id
+            type: BINARY(16)
+        tableName: tb_section
+- changeSet:
+    id: 1724476288382-4
+    author: evobu (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: tb_section_candidatesPK
+            name: section_entity_id
+            type: BINARY(16)
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: tb_section_candidatesPK
+            name: candidates_id
+            type: BINARY(16)
+        tableName: tb_section_candidates
+- changeSet:
+    id: 1724476288382-5
+    author: evobu (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: tb_votePK
+            name: id
+            type: BINARY(16)
+        - column:
+            name: registered_time
+            type: datetime(6)
+        - column:
+            name: fk_candidate
+            type: BINARY(16)
+        - column:
+            name: fk_section
+            type: BINARY(16)
+        - column:
+            name: fk_voter
+            type: BINARY(16)
+        tableName: tb_vote
+- changeSet:
+    id: 1724476288382-6
+    author: evobu (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: tb_voterPK
+            name: id
+            type: BINARY(16)
+        - column:
+            constraints:
+              nullable: false
+            name: name
+            type: VARCHAR(255)
+        tableName: tb_voter
+- changeSet:
+    id: 1724476288382-7
+    author: evobu (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: name
+        constraintName: UC_TB_CANDIDATENAME_COL
+        tableName: tb_candidate
+- changeSet:
+    id: 1724476288382-8
+    author: evobu (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: name
+        constraintName: UC_TB_VOTERNAME_COL
+        tableName: tb_voter
+- changeSet:
+    id: 1724476288382-9
+    author: evobu (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: fk_section, fk_voter
+        constraintName: UKmgx273sukrub61jxbuxi3hqyu
+        tableName: tb_vote
+- changeSet:
+    id: 1724476288382-10
+    author: evobu (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: section_entity_id
+        baseTableName: tb_section_candidates
+        constraintName: FK8vkkw11itrlxi7tcl7yl0qx0y
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: tb_section
+        validate: true
+- changeSet:
+    id: 1724476288382-11
+    author: evobu (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: candidates_id
+        baseTableName: tb_section_candidates
+        constraintName: FK94u3k4xwdfkklj9rwc17jkeip
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: tb_candidate
+        validate: true
+- changeSet:
+    id: 1724476288382-12
+    author: evobu (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: fk_section
+        baseTableName: tb_vote
+        constraintName: FKbjyrfw9vusc9qvpts8godee5x
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: tb_section
+        validate: true
+- changeSet:
+    id: 1724476288382-13
+    author: evobu (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: fk_candidate
+        baseTableName: tb_vote
+        constraintName: FKh94gfol79qeq8bsdybmfupmp9
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: tb_candidate
+        validate: true
+- changeSet:
+    id: 1724476288382-14
+    author: evobu (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: running_position_id
+        baseTableName: tb_section
+        constraintName: FKo23f49dx5v5355hcwkniqei62
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: tb_position
+        validate: true
+- changeSet:
+    id: 1724476288382-15
+    author: evobu (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: fk_voter
+        baseTableName: tb_vote
+        constraintName: FKqk7ajg2hn8fprkmn3ep9w00p
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: tb_voter
+        validate: true
+
