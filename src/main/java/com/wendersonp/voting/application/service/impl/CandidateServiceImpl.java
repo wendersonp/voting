@@ -38,6 +38,7 @@ public class CandidateServiceImpl implements ICandidateService {
             final var candidateEntity = candidateDTO.toEntity();
             repository.save(candidateEntity);
         } catch (DataIntegrityViolationException ex) {
+            logger.warn("{}; name: {}", ErrorMessages.CANDIDATE_ALREADY_EXISTS, candidateDTO.name());
             throw new BadRequestException(ErrorMessages.CANDIDATE_ALREADY_EXISTS, ex);
         }
     }
@@ -46,7 +47,7 @@ public class CandidateServiceImpl implements ICandidateService {
     public CandidateDTO findById(UUID id) {
         var candidateEntity = repository
                 .findById(id)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.CANDIDATE_NOT_FOUND));
         return new CandidateDTO(candidateEntity);
     }
 
@@ -62,7 +63,7 @@ public class CandidateServiceImpl implements ICandidateService {
     @Override
     public void update(UUID id, CandidateDTO candidateDTO) {
         validateIfExists(id);
-        repository.save(candidateDTO.toEntity());
+        repository.save(candidateDTO.toEntity(id));
     }
 
     @Override
@@ -74,13 +75,15 @@ public class CandidateServiceImpl implements ICandidateService {
 
     private void validateIfAlreadyReceivedVote(UUID id) {
         if (voteRepository.existsByCandidateId(id)) {
+            logger.warn("{}; id: {}", ErrorMessages.CANDIDATE_CANNOT_BE_DELETED, id);
             throw new BadRequestException(ErrorMessages.CANDIDATE_CANNOT_BE_DELETED);
         }
     }
 
     private void validateIfExists(UUID candidateId) {
         if (!repository.existsById(candidateId)) {
-            throw new NotFoundException();
+            logger.warn("{}; id: {}", ErrorMessages.CANDIDATE_NOT_FOUND, candidateId);
+            throw new NotFoundException(ErrorMessages.CANDIDATE_NOT_FOUND);
         }
     }
 }

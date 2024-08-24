@@ -4,14 +4,16 @@ import com.wendersonp.voting.application.dto.OpenSectionDTO;
 import com.wendersonp.voting.application.dto.ViewSectionDTO;
 import com.wendersonp.voting.application.exception.BadRequestException;
 import com.wendersonp.voting.application.exception.NotFoundException;
+import com.wendersonp.voting.application.service.ISectionBulletinBuilderService;
 import com.wendersonp.voting.application.service.ISectionService;
 import com.wendersonp.voting.application.util.ErrorMessages;
 import com.wendersonp.voting.domain.model.SectionEntity;
 import com.wendersonp.voting.domain.model.SectionReportEntity;
 import com.wendersonp.voting.domain.repository.ISectionRepository;
 import com.wendersonp.voting.domain.service.ISectionAppurationService;
-import com.wendersonp.voting.application.service.ISectionBulletinBuilderService;
 import com.wendersonp.voting.domain.service.ISectionValidationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,9 @@ import java.util.UUID;
 
 @Service
 public class SectionServiceImpl implements ISectionService {
+
+    public static final Logger logger = LoggerFactory.getLogger(SectionServiceImpl.class);
+
     private final ISectionRepository sectionRepository;
 
     private final ISectionValidationService sectionValidationService;
@@ -55,6 +60,7 @@ public class SectionServiceImpl implements ISectionService {
         boolean validationResult = sectionValidationService
                 .validateToOpenSection(sectionDTO.candidatesRunningIds(), sectionDTO.runningPosition());
         if (!validationResult) {
+            logger.warn("{}; positionId: {}", ErrorMessages.SECTION_CANNOT_BE_OPENED, sectionDTO.runningPosition());
             throw new BadRequestException(ErrorMessages.SECTION_CANNOT_BE_OPENED);
         }
 
@@ -68,6 +74,7 @@ public class SectionServiceImpl implements ISectionService {
         SectionEntity sectionEntity = findSection(sectionId);
         boolean canCloseSection = sectionValidationService.validateToCloseSection(sectionEntity);
         if (!canCloseSection) {
+            logger.warn("{}; id: {}", ErrorMessages.SECTION_CANNOT_BE_CLOSED, sectionId);
             throw new BadRequestException(ErrorMessages.SECTION_CANNOT_BE_CLOSED);
         }
         sectionEntity.closeSection();
@@ -82,6 +89,7 @@ public class SectionServiceImpl implements ISectionService {
         boolean isClosedSection = sectionValidationService.validateAppurateSection(sectionEntity);
 
         if (!isClosedSection) {
+            logger.warn("{}; id: {}", ErrorMessages.SECTION_CANNOT_COUNT_VOTES, sectionId);
             throw new BadRequestException(ErrorMessages.SECTION_CANNOT_COUNT_VOTES);
         }
 
@@ -92,6 +100,6 @@ public class SectionServiceImpl implements ISectionService {
     private SectionEntity findSection(UUID sectionId) {
         return sectionRepository
                 .findById(sectionId)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.SECTION_NOT_FOUND));
     }
 }

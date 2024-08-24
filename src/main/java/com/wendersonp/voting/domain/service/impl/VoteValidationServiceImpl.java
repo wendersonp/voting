@@ -1,6 +1,7 @@
 package com.wendersonp.voting.domain.service.impl;
 
 import com.wendersonp.voting.application.exception.NotFoundException;
+import com.wendersonp.voting.application.util.ErrorMessages;
 import com.wendersonp.voting.domain.model.CandidateEntity;
 import com.wendersonp.voting.domain.model.SectionEntity;
 import com.wendersonp.voting.domain.model.VoteEntity;
@@ -27,7 +28,7 @@ public class VoteValidationServiceImpl implements IVoteValidationService {
     @Override
     public boolean isVoteValid(VoteEntity vote) {
         SectionEntity section = findSection(vote.getSection().getId())
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.SECTION_NOT_FOUND));
         return doesVoteNotExist(vote)
                 && isSectionOpen(section)
                 && isCandidateRunning(vote.getCandidate().getId(), section);

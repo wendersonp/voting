@@ -18,8 +18,7 @@ import java.util.UUID;
 
 @Service
 public class PositionServiceImpl implements IPositionService {
-
-    public static final Logger LOGGER = LoggerFactory.getLogger(PositionServiceImpl.class);
+    public static final Logger logger = LoggerFactory.getLogger(PositionServiceImpl.class);
 
     private final IPositionRepository repository;
 
@@ -34,6 +33,7 @@ public class PositionServiceImpl implements IPositionService {
             final var positionEntity = positionDTO.toEntity();
             repository.save(positionEntity);
         } catch (DataIntegrityViolationException ex) {
+            logger.warn("{}; name: {}", ErrorMessages.POSITION_ALREADY_EXISTS, positionDTO.name());
             throw new BadRequestException(ErrorMessages.POSITION_ALREADY_EXISTS, ex);
         }
     }
@@ -42,7 +42,7 @@ public class PositionServiceImpl implements IPositionService {
     public PositionDTO findById(UUID id) {
         var positionEntity = repository
                 .findById(id)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.POSITION_NOT_FOUND));
         return new PositionDTO(positionEntity);
     }
 
@@ -58,7 +58,7 @@ public class PositionServiceImpl implements IPositionService {
     @Override
     public void update(UUID id, PositionDTO positionDTO) {
         validateIfExists(id);
-        repository.save(positionDTO.toEntity());
+        repository.save(positionDTO.toEntity(id));
     }
 
     @Override
@@ -69,7 +69,8 @@ public class PositionServiceImpl implements IPositionService {
 
     private void validateIfExists(UUID id) {
         if (!repository.existsById(id)) {
-            throw new NotFoundException();
+            logger.warn("{}; id: {}", ErrorMessages.POSITION_NOT_FOUND, id);
+            throw new NotFoundException(ErrorMessages.POSITION_NOT_FOUND);
         }
     }
 }
