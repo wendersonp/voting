@@ -44,7 +44,7 @@ docker-compose -f voting-compose.yaml up -d
 1. Baixe o [binário da release](https://github.com/wendersonp/voting/releases)
    Pelo link ou através da página de releases no repositório
 2. Após ter executado o docker-compose, criado os conteineres com as ferramentas necessárias e 
-3. ter instalado a Runtime do Java, execute a aplicação com o seguinte comando:
+   ter instalado a Runtime do Java, execute a aplicação com o seguinte comando:
 
 ```
 java -jar voting-<versao>.jar
