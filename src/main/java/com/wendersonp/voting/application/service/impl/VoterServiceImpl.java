@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Service
 public class VoterServiceImpl implements IVoterService {
-    public static final Logger LOGGER = LoggerFactory.getLogger(VoterServiceImpl.class);
+    public static final Logger logger = LoggerFactory.getLogger(VoterServiceImpl.class);
 
     private final IVoterRepository repository;
 
@@ -37,6 +37,7 @@ public class VoterServiceImpl implements IVoterService {
             final var voterEntity = voterDTO.toEntity();
             repository.save(voterEntity);
         } catch (DataIntegrityViolationException ex) {
+            logger.warn("{}; name: {}", ErrorMessages.VOTER_ALREADY_EXISTS, voterDTO.name());
             throw new BadRequestException(ErrorMessages.VOTER_ALREADY_EXISTS, ex);
         }
     }
@@ -45,7 +46,7 @@ public class VoterServiceImpl implements IVoterService {
     public VoterDTO findById(UUID id) {
         var voterEntity = repository
                 .findById(id)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.VOTER_NOT_FOUND));
         return new VoterDTO(voterEntity);
     }
 
@@ -61,7 +62,7 @@ public class VoterServiceImpl implements IVoterService {
     @Override
     public void update(UUID id, VoterDTO voterDTO) {
         validateIfExists(id);
-        repository.save(voterDTO.toEntity());
+        repository.save(voterDTO.toEntity(id));
     }
 
     @Override
@@ -73,13 +74,15 @@ public class VoterServiceImpl implements IVoterService {
 
     private void validateIfAlreadyVoted(UUID id) {
         if (voteRepository.existsByVoterId(id)) {
+            logger.warn("{}; id: {}", ErrorMessages.VOTER_CANNOT_BE_DELETED, id);
             throw new BadRequestException(ErrorMessages.VOTER_CANNOT_BE_DELETED);
         }
     }
 
     private void validateIfExists(UUID id) {
         if (!repository.existsById(id)) {
-            throw new NotFoundException();
+            logger.warn("{}; id: {}", ErrorMessages.VOTER_NOT_FOUND, id);
+            throw new NotFoundException(ErrorMessages.VOTER_NOT_FOUND);
         }
     }
 }

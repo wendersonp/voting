@@ -2,6 +2,8 @@ package com.wendersonp.voting.infrastructure.web.controller;
 
 import com.wendersonp.voting.application.dto.CandidateDTO;
 import com.wendersonp.voting.application.service.ICandidateService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/candidatos")
+@Tag(name = "Candidatos", description = "Rotas para gerenciar cadastro de candidatos")
 public class CandidateController {
 
     private final ICandidateService candidateService;
@@ -32,18 +35,21 @@ public class CandidateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Registra um candidato")
     public void create(@RequestBody @Valid CandidateDTO candidateDTO) {
         candidateService.create(candidateDTO);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Busca um candidato pelo seu Id")
     public CandidateDTO findById(@PathVariable UUID id) {
         return candidateService.findById(id);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Busca uma página com candidatos")
     public ResponseEntity<List<CandidateDTO>> findAll(Pageable pageRequest) {
         Page<CandidateDTO> page = candidateService.findAll(pageRequest);
         return ResponseEntity
@@ -55,12 +61,15 @@ public class CandidateController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Atualiza o nome de um candidato")
     public void update(@PathVariable UUID id, @RequestBody @Valid CandidateDTO candidateDTO) {
         candidateService.update(id, candidateDTO);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Remove o registro de um candidato", description = "Apenas candidatos que nunca receberam votos " +
+            "podem ser apagados")
     public void delete(@PathVariable UUID id) {
         candidateService.delete(id);
     }

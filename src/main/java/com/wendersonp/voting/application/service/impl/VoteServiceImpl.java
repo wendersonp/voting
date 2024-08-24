@@ -7,12 +7,15 @@ import com.wendersonp.voting.application.util.ErrorMessages;
 import com.wendersonp.voting.domain.model.VoteEntity;
 import com.wendersonp.voting.domain.repository.IVoteRepository;
 import com.wendersonp.voting.domain.service.IVoteValidationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
 public class VoteServiceImpl implements IVoteService {
+    public static final Logger logger = LoggerFactory.getLogger(VoteServiceImpl.class);
 
     private final IVoteRepository voteRepository;
 
@@ -28,7 +31,8 @@ public class VoteServiceImpl implements IVoteService {
         VoteEntity vote = voteDTO.toEntity(voterId);
 
         if (!voteValidationService.isVoteValid(vote)) {
-            throw new BadRequestException(ErrorMessages.VOTE_ALREADY_EXISTS);
+            logger.warn("{}; id: {}", ErrorMessages.VOTE_INVALID, voterId);
+            throw new BadRequestException(ErrorMessages.VOTE_INVALID);
         }
 
         voteRepository.save(vote);
