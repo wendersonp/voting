@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.wendersonp</groupId>
 	<artifactId>voting</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>voting</name>
 	<description>Voting System</description>
 	<url/>
