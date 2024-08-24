@@ -11,6 +11,14 @@ A documentação pode ser acessada ao executar o projeto e acessar o endpoint:
 /swagger-ui/index.html#
 ```
 
+## Tecnologias utilizadas
+
+- Java 17: Implementação da aplicação
+- Spring Boot 3.3.3: Implementação da aplicação
+- Docker: Conteineres para execução da aplicação
+- Redis: Armazenamento de cache para boletim
+- MySQL: Banco de dados da aplicação
+
 ## Requisitos
 
 Para rodar a aplicação, é necessário ter instalado no sistema:
