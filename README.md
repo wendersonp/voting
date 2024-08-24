@@ -6,6 +6,9 @@ em uma seção, fechar seção e fazer um boletim de seção. Para registrar um 
 cargo, basta apenas utilizar o seu nome. Candidatos, eleitores e cargos sao gerenciados por CRUDs,
 enquanto a seção e o voto seguem regras específicas.
 
+A arquitetura da aplicação foi projetada com base no padrão DDD (Domain Driven Design),
+porém, algumas concessões foram feitas para agilizar o desenvolvimento do projeto.
+
 A documentação pode ser acessada ao executar o projeto e acessar o endpoint:
 ```
 /swagger-ui/index.html#
