@@ -40,6 +40,7 @@ class VoteValidationServiceImplTest {
     @Test
     void shouldVerifyThatVoteIsValid() {
         SectionEntity section = SectionEntityFixture.buildToOpen();
+        section.openSection();
         CandidateEntity candidate = section.getCandidates().iterator().next();
         VoterEntity voter = VoterEntityFixture.build();
         VoteEntity vote = VoteEntityFixture.build(section, voter, candidate);
